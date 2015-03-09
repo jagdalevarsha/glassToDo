@@ -24,6 +24,7 @@ public class TaskItemDb extends SQLiteOpenHelper{
 	public static final String COLUMN_TASKDESCRIPTION = "taskdescription";
 	public static final String COLUMN_DONE = "done";
 	public static final String COLUMN_ORDER = "ord";
+    public static final String COLUMN_REWORK = "rework";
 	
 	public static final String COLUMN_URGENCY = "urgency";
 	public static final String COLUMN_IMPORTANCE = "importance";
@@ -43,6 +44,7 @@ public class TaskItemDb extends SQLiteOpenHelper{
 				 + COLUMN_TASKDESCRIPTION + " TEXT,"
 				 + COLUMN_DONE + " INTEGER,"
 				 + COLUMN_ORDER + " INTEGER,"
+                + COLUMN_REWORK + " INTEGER,"
 				 
 				 + COLUMN_URGENCY + " INTEGER," 
 				 + COLUMN_IMPORTANCE + " INTEGER," 
@@ -76,6 +78,7 @@ public class TaskItemDb extends SQLiteOpenHelper{
         values.put(COLUMN_TASKDESCRIPTION, item.getTaskDescription());
         values.put(COLUMN_DONE, item.isDone() ? 1 : 0);
         values.put(COLUMN_ORDER, max_order);
+        values.put(COLUMN_REWORK, item.isRework()?1:0);
         
         values.put(COLUMN_URGENCY, item.getUrgency());
         values.put(COLUMN_IMPORTANCE, item.getImportance());
@@ -91,7 +94,9 @@ public class TaskItemDb extends SQLiteOpenHelper{
 				+ COLUMN_ID + ","
 				+ COLUMN_TASKDESCRIPTION + ","
 				+ COLUMN_DONE + ","
-				+ COLUMN_ORDER + " FROM " + TABLE_TASKS 
+				+ COLUMN_ORDER
+                + ","
+                + COLUMN_REWORK + " FROM " + TABLE_TASKS
 				+ " WHERE " + COLUMN_ID + " =  \"" + tid + "\"";
 		
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -106,7 +111,8 @@ public class TaskItemDb extends SQLiteOpenHelper{
 			String taskDescription = cursor.getString(1);
 			int done = cursor.getInt(2);
 			int order = cursor.getInt(3);
-			taskItem = new TaskItem(id, taskDescription, done==0 ? false : true, order);
+            int rework = cursor.getInt(4);
+			taskItem = new TaskItem(id, taskDescription, done==0 ? false : true, order,rework==0 ? false : true);
 			
 			cursor.close();
 		} else {
@@ -122,6 +128,7 @@ public class TaskItemDb extends SQLiteOpenHelper{
         values.put(COLUMN_TASKDESCRIPTION, newTask.getTaskDescription());
         values.put(COLUMN_DONE, newTask.isDone() ? 1 : 0);
         values.put(COLUMN_ORDER, newTask.getOrder());
+        values.put(COLUMN_REWORK, newTask.isRework()?1:0);
         
         values.put(COLUMN_URGENCY, newTask.getUrgency());
         values.put(COLUMN_IMPORTANCE, newTask.getImportance());
@@ -140,7 +147,8 @@ public class TaskItemDb extends SQLiteOpenHelper{
 				+ COLUMN_ID + "," 
 				+ COLUMN_TASKDESCRIPTION + "," 
 				+ COLUMN_DONE + ","
-				+ COLUMN_ORDER + " FROM " + TABLE_TASKS
+				+ COLUMN_ORDER + ","
+                + COLUMN_REWORK + " FROM " + TABLE_TASKS
 				+ " ORDER BY " + COLUMN_ORDER;
 		
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -156,8 +164,8 @@ public class TaskItemDb extends SQLiteOpenHelper{
 				String taskDescription = cursor.getString(1);
 				int done = cursor.getInt(2);
 				int order = cursor.getInt(3);
-				
-				allTaskItems.add(new TaskItem(id, taskDescription, done==0 ? false : true, order));
+				int rework = cursor.getInt(4);
+				allTaskItems.add(new TaskItem(id, taskDescription, done==0 ? false : true, order,rework==0 ? false : true));
 				cursor.moveToNext();
 			}
 			cursor.close();

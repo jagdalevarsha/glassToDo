@@ -46,6 +46,20 @@
             android:enabled="true">
         </activity>
 
+        <activity
+            android:name="glassproject.ubicomp.com.todo.activity.ToDoTaskListActivity"
+            android:enabled="true"
+            android:label="@string/quick_task" >
+
+            <intent-filter>
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/todo_task_voice_trigger" />
+        </activity>
+
     </application>
 
 </manifest>

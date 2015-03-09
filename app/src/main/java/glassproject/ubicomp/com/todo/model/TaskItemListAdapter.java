@@ -36,10 +36,15 @@ public class TaskItemListAdapter extends ArrayAdapter<TaskItem> {
 		} else {
 			tv.setPaintFlags(tv.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
 		}
+
 		
 		if(taskItem.grabbed) {
 			rowView.setBackgroundColor(Color.parseColor("#77aa77"));
+            if(taskItem.isRework())rowView.setBackgroundColor(Color.parseColor("#77aa00"));
 		}
+        else if(taskItem.isRework()){
+            rowView.setBackgroundColor(Color.parseColor("#77aa70"));
+        }
 
 		return rowView;
 	}

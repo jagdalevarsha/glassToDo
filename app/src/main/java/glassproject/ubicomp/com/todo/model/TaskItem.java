@@ -9,6 +9,7 @@ public class TaskItem{
 	private String _taskdescription;
 	private boolean _done;
 	private int _order;
+    private boolean _rework;
 	
 	// unused as of now
 	private int _urgency; //Now, Tomorrow, Later (0, 1, 2) // perhaps should be an enum
@@ -19,15 +20,16 @@ public class TaskItem{
 	// transient field; not in db
 	public boolean grabbed = false;
 	
-	public TaskItem(int id, String taskdescription, boolean done, int order) {
+	public TaskItem(int id, String taskdescription, boolean done, int order,boolean rework) {
 		this._id = id;
 		this._taskdescription = taskdescription;
 		this._done = done;
 		this._order = order;
+        this._rework = rework;
 	}
 	
 	public TaskItem(int id, String taskdescription, boolean done) {
-		this(id, taskdescription, done, -1);
+		this(id, taskdescription, done, -1,false);
 	}
 	
 	public TaskItem(int id, String taskdescription) {
@@ -61,6 +63,12 @@ public class TaskItem{
 	public int getOrder() {
 		return _order;
 	}
+
+    public boolean isRework() { return _rework;}
+
+    public void markRework(boolean r) {
+        _rework = r;
+    }
 	
 	public void setOrder(int order) {
 		this._order = order;		

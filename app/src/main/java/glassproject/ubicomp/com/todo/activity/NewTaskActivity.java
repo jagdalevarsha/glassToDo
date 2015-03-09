@@ -11,17 +11,23 @@ import glassproject.ubicomp.com.todo.model.TaskItem;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+//import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.RecognizerIntent;
+import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+//import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+
+//import com.google.android.glass.touchpad.Gesture;
+//import com.google.android.glass.touchpad.GestureDetector;
 
 @SuppressLint("HandlerLeak")
 public class NewTaskActivity extends Activity {
@@ -32,13 +38,17 @@ public class NewTaskActivity extends Activity {
 	
 	private final int SPEECH = 10284;
 
+//    private GestureDetector mGestureDetector;
+//    private TextViewGestureDetector objGestureDetector;
+//    boolean inMenu = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		db = new TaskItemDb(this);
 
 		setContentView(R.layout.new_task_screen);
-
+//        objGestureDetector = new TextViewGestureDetector(this,this.obtainStyledAttributes() );
 		recordTask();
 	}
 
@@ -121,6 +131,10 @@ public class NewTaskActivity extends Activity {
 				saveTimer = null;
 				((TextView) findViewById(R.id.messageTextView)).setText("tap to options");
 			}
+//            inMenu = true;
+//            objGestureDetector.onViewAttachedToWindow(((TextView) findViewById(R.id.record_again_menu_item)));
+//            objGestureDetector.onViewAttachedToWindow(((TextView) findViewById(R.id.cancel_menu_item)));
+//            mGestureDetector = createGestureDetector(this);
 			openOptionsMenu();
 			return true; 
 		}
@@ -138,13 +152,16 @@ public class NewTaskActivity extends Activity {
 			return true;
 		case R.id.cancel_menu_item:
 			finish();
+//            inMenu = false;
+//            objGestureDetector.onViewDetachedFromWindow(((TextView) findViewById(R.id.record_again_menu_item)));
+//            objGestureDetector.onViewDetachedFromWindow(((TextView) findViewById(R.id.cancel_menu_item)));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 
-	private void saveTask() {
+	public void saveTask() {
 		db.saveTaskItem(createdTask);
 		((TextView) findViewById(R.id.newTaskLabel)).setVisibility(View.VISIBLE);
 		((TextView) findViewById(R.id.taskDescription)).setVisibility(View.VISIBLE);
@@ -157,4 +174,43 @@ public class NewTaskActivity extends Activity {
 				finish();				
 			} }, 1000);
 	}
+
+//    private GestureDetector createGestureDetector(Context context) {
+//        GestureDetector gestureDetector = new GestureDetector(context);
+//
+//        //Create a base listener for generic gestures
+//        gestureDetector.setBaseListener( new GestureDetector.BaseListener() {
+//            @Override
+//            public boolean onGesture(Gesture gesture) {
+//                if (gesture == Gesture.SWIPE_DOWN && inMenu){
+//                    saveTask();
+//                }
+//                return false;
+//            }
+//        });
+//
+//        gestureDetector.setFingerListener(new GestureDetector.FingerListener() {
+//            @Override
+//            public void onFingerCountChanged(int previousCount, int currentCount) {
+//                // do something on finger count changes
+//            }
+//        });
+//
+//        gestureDetector.setScrollListener(new GestureDetector.ScrollListener() {
+//            @Override
+//            public boolean onScroll(float displacement, float delta, float velocity) {
+//                // do something on scrolling
+//                return true;
+//            }
+//        });
+//
+//        return gestureDetector;
+//    }
+//    @Override
+//    public boolean onGenericMotionEvent(MotionEvent event) {
+//        if (mGestureDetector != null) {
+//            return mGestureDetector.onMotionEvent(event);
+//        }
+//        return false;
+//    }
 }
