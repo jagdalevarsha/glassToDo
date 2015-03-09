@@ -71,13 +71,23 @@ public class SingleTaskActivity extends Activity {
 	
 	@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-		if(taskItem.isDone()) {
-			menu.findItem(R.id.mark_done_menu_item).setVisible(false);
-			menu.findItem(R.id.mark_not_done_menu_item).setVisible(true);			
-		} else {
-			menu.findItem(R.id.mark_done_menu_item).setVisible(true);
-			menu.findItem(R.id.mark_not_done_menu_item).setVisible(false);
-		}
+        if(taskItem.isRework()){
+            menu.findItem(R.id.rework_task_menu_item).setVisible(true);
+            menu.findItem(R.id.mark_rework_done_menu_item).setVisible(true);
+            menu.findItem(R.id.mark_done_menu_item).setVisible(false);
+            menu.findItem(R.id.mark_not_done_menu_item).setVisible(false);
+            menu.findItem(R.id.edit_task_menu_item).setVisible(false);
+        }else {
+            menu.findItem(R.id.rework_task_menu_item).setVisible(false);
+            menu.findItem(R.id.mark_rework_done_menu_item).setVisible(false);
+            if (taskItem.isDone()) {
+                menu.findItem(R.id.mark_done_menu_item).setVisible(false);
+                menu.findItem(R.id.mark_not_done_menu_item).setVisible(true);
+            } else {
+                menu.findItem(R.id.mark_done_menu_item).setVisible(true);
+                menu.findItem(R.id.mark_not_done_menu_item).setVisible(false);
+            }
+        }
 		
 		return true;
 	}
@@ -103,6 +113,12 @@ public class SingleTaskActivity extends Activity {
 		case R.id.edit_task_menu_item:
 			recordTask();
 			return true;
+        case R.id.rework_task_menu_item:
+            reworkTask();
+            return true;
+        case R.id.mark_rework_done_menu_item:
+            markReworkDone();
+            return true;
 		case R.id.delete_task_menu_item:
 			deleteTask();
 			return true;
@@ -124,11 +140,25 @@ public class SingleTaskActivity extends Activity {
 		db.updateTaskItem(taskItem);
 		Toast.makeText(this, "Task marked not done.", Toast.LENGTH_SHORT).show();
 	}
+
+    private void markReworkDone() {
+        taskItem.markDone(true);
+        taskItem.markRework(true);
+        populateTaskOnView();
+        db.updateTaskItem(taskItem);
+        Toast.makeText(this, "Task marked not done.", Toast.LENGTH_SHORT).show();
+    }
 	
 	private void recordTask() {
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		startActivityForResult(intent, SPEECH);
 	}
+
+    private void reworkTask() {
+        taskItem.markRework(false);
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        startActivityForResult(intent, SPEECH);
+    }
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,

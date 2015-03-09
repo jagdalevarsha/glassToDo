@@ -11,6 +11,8 @@
     <string name="edit_task">Record again</string>
     <string name="delete_task">Delete</string>
     <string name="quick_task">To Do</string>
+    <string name="rework_task">Rework</string>
+    <string name="mark_rework_done">Mark done</string>
 
 </resources>
 
