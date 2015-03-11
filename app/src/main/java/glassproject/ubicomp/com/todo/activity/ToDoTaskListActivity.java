@@ -1,9 +1,12 @@
 package glassproject.ubicomp.com.todo.activity;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.speech.RecognizerIntent;
 import android.view.KeyEvent;
@@ -12,6 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import com.google.android.glass.timeline.LiveCard;
+import com.google.android.glass.view.WindowUtils;
 
 import java.util.List;
 import java.util.Timer;
@@ -27,14 +33,18 @@ import glassproject.ubicomp.com.todo.model.TaskItem;
 public class ToDoTaskListActivity extends Activity {
     private TaskItem createdTask = null;
     private TaskItemDb db;
+    private ToDoLiveCardService liveService;
 
     private final int SPEECH = 10284;
 
+    private void performActionsIfConnected() {
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = new TaskItemDb(this);
-
+        Intent i= new Intent(this, ToDoLiveCardService.class);
+        this.startService(i);
         setContentView(R.layout.todo_task_screen);
         recordTask();
     }
@@ -85,5 +95,11 @@ public class ToDoTaskListActivity extends Activity {
         ((TextView) findViewById(R.id.taskDescription)).setVisibility(View.VISIBLE);
         ((TextView) findViewById(R.id.messageTextView)).setVisibility(View.VISIBLE);
         ((TextView) findViewById(R.id.messageTextView)).setText("Saved.");
+
+//        liveService = new ToDoLiveCardService();
+//        Intent menuIntent = new Intent(this, ToDoLiveCardService.class);
+//        liveService.startService(menuIntent);
+//        liveService.onStartCommand(menuIntent,Intent.FLAG_ACTIVITY_SINGLE_TOP,-1);
+
     }
 }

@@ -6,6 +6,7 @@ import java.util.TimerTask;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -53,7 +54,11 @@ public class SingleTaskActivity extends Activity {
 	private void populateTaskOnView() {
 		TextView tv = (TextView) findViewById(R.id.taskDescription);
 		tv.setText(taskItem.getTaskDescription());
-		
+
+        if(taskItem.isRework())
+        {
+            tv.setPaintFlags(Color.parseColor("#77aa70"));
+        }
 		if(taskItem.isDone()) {
 			tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 		} else {
@@ -80,6 +85,7 @@ public class SingleTaskActivity extends Activity {
         }else {
             menu.findItem(R.id.rework_task_menu_item).setVisible(false);
             menu.findItem(R.id.mark_rework_done_menu_item).setVisible(false);
+            menu.findItem(R.id.edit_task_menu_item).setVisible(true);
             if (taskItem.isDone()) {
                 menu.findItem(R.id.mark_done_menu_item).setVisible(false);
                 menu.findItem(R.id.mark_not_done_menu_item).setVisible(true);

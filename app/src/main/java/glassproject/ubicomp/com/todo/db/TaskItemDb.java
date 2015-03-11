@@ -179,4 +179,39 @@ public class TaskItemDb extends SQLiteOpenHelper{
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_TASKS, COLUMN_ID + " = " + item.getID(), null);
 	}
+
+    public TaskItem getLatestTaskItem()
+    {
+        String query = "Select "
+                + COLUMN_ID + ","
+                + COLUMN_TASKDESCRIPTION + ","
+                + COLUMN_DONE + ","
+                + COLUMN_ORDER + ","
+                + COLUMN_REWORK + " FROM " + TABLE_TASKS
+                + " WHERE " + COLUMN_DONE + " =  \"" + "0" + "\""
+                + " ORDER BY DEADLINE ASC LIMIT 1";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        TaskItem taskItem;
+
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+
+            int id = cursor.getInt(0);
+            String taskDescription = cursor.getString(1);
+            int done = cursor.getInt(2);
+            int order = cursor.getInt(3);
+            int rework = cursor.getInt(4);
+            taskItem = new TaskItem(id, taskDescription, done==0 ? false : true, order,rework==0 ? false : true);
+
+            cursor.close();
+        } else {
+            taskItem = null;
+        }
+
+        db.close();
+        return taskItem;
+    }
 }

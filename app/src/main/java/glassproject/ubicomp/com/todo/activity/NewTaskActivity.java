@@ -35,7 +35,7 @@ public class NewTaskActivity extends Activity {
 	private TaskItem createdTask = null;
 	private TaskItemDb db;
 	private Timer saveTimer;
-	
+//	private ToDoLiveCardService liveService;
 	private final int SPEECH = 10284;
 
 //    private GestureDetector mGestureDetector;
@@ -46,7 +46,8 @@ public class NewTaskActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		db = new TaskItemDb(this);
-
+        Intent i= new Intent(this, ToDoLiveCardService.class);
+        this.startService(i);
 		setContentView(R.layout.new_task_screen);
 //        objGestureDetector = new TextViewGestureDetector(this,this.obtainStyledAttributes() );
 		recordTask();
@@ -167,7 +168,9 @@ public class NewTaskActivity extends Activity {
 		((TextView) findViewById(R.id.taskDescription)).setVisibility(View.VISIBLE);
 		((TextView) findViewById(R.id.messageTextView)).setVisibility(View.VISIBLE);
 		((TextView) findViewById(R.id.messageTextView)).setText("Saved.");
-
+//        liveService = new ToDoLiveCardService();
+//        Intent menuIntent = new Intent(this, NewTaskActivity.class);
+//        liveService.onStartCommand(menuIntent,Intent.FLAG_ACTIVITY_SINGLE_TOP,-1);
 		new Timer().schedule(new TimerTask() {
 			@Override
 			public void run() {
