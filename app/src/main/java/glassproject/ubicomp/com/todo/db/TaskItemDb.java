@@ -152,7 +152,9 @@ public class TaskItemDb extends SQLiteOpenHelper{
         values.put(COLUMN_DONE, newTask.isDone() ? 1 : 0);
         values.put(COLUMN_ORDER, newTask.getOrder());
         values.put(COLUMN_REWORK, newTask.isRework()?1:0);
-        
+        values.put(COLUMN_LOC, newTask.getLoc());
+        values.put(COLUMN_TIMESTAMP, newTask.getTimeStamp());
+
         values.put(COLUMN_URGENCY, newTask.getUrgency());
         values.put(COLUMN_IMPORTANCE, newTask.getImportance());
         values.put(COLUMN_DEADLINE, newTask.getDeadline());

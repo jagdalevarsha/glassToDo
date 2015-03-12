@@ -214,10 +214,4 @@ public class SingleTaskActivity extends Activity {
 				finish();				
 			} }, 1000);
 	}
-
-    @Override
-    public void onOptionsMenuClosed(Menu menu) {
-        // Nothing else to do, closing the activity.
-        finish();
-    }
 }
