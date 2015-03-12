@@ -14,5 +14,6 @@
     <string name="rework_task">Rework</string>
     <string name="mark_rework_done">Mark done</string>
     <string name="to_do_service">To Do Quick View</string>
+    <string name="status_icon">Status Icon</string>
 </resources>
 
