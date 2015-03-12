@@ -16,5 +16,6 @@
     <string name="to_do_service">To Do Quick View</string>
     <string name="service_not_available">Location Service Not Available</string>
     <string name="more_info_task">More Info</string>
+    <string name="status_icon">Status Icon</string>
 </resources>
 
