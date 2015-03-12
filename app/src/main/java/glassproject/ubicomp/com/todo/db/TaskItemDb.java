@@ -97,7 +97,7 @@ public class TaskItemDb extends SQLiteOpenHelper{
         values.put(COLUMN_DONE, item.isDone() ? 1 : 0);
         values.put(COLUMN_ORDER, max_order);
         values.put(COLUMN_REWORK, item.isRework()?1:0);
-        values.put(COLUMN_TIMESTAMP, Calendar.getInstance().get(Calendar.DATE) + " " + Calendar.getInstance().get(Calendar.MONTH) + " " + Calendar.getInstance().get(Calendar.YEAR));
+        values.put(COLUMN_TIMESTAMP, Calendar.getInstance().get(Calendar.MONTH) + "/ " + Calendar.getInstance().get(Calendar.DATE) + "/ " + Calendar.getInstance().get(Calendar.YEAR));
         values.put(COLUMN_LOC, getLocation(currContext));
         
         values.put(COLUMN_URGENCY, item.getUrgency());
