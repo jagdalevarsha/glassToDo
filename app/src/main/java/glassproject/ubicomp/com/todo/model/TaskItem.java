@@ -10,6 +10,8 @@ public class TaskItem{
 	private boolean _done;
 	private int _order;
     private boolean _rework;
+    private String _timestamp;
+    private String _loc;
 	
 	// unused as of now
 	private int _urgency; //Now, Tomorrow, Later (0, 1, 2) // perhaps should be an enum
@@ -20,16 +22,18 @@ public class TaskItem{
 	// transient field; not in db
 	public boolean grabbed = false;
 	
-	public TaskItem(int id, String taskdescription, boolean done, int order,boolean rework) {
+	public TaskItem(int id, String taskdescription, boolean done, int order,boolean rework,String timestamp,String loc) {
 		this._id = id;
 		this._taskdescription = taskdescription;
 		this._done = done;
 		this._order = order;
         this._rework = rework;
+        this._timestamp = timestamp;
+        this._loc = loc;
 	}
 	
 	public TaskItem(int id, String taskdescription, boolean done) {
-		this(id, taskdescription, done, -1,false);
+		this(id, taskdescription, done, -1,false,"","");
 	}
 	
 	public TaskItem(int id, String taskdescription) {
@@ -47,6 +51,14 @@ public class TaskItem{
 	public String getTaskDescription(){
 		return this._taskdescription;
 	}
+
+    public String getTimeStamp(){
+        return this._timestamp;
+    }
+
+    public String getLoc(){
+        return this._loc;
+    }
 	
 	public void updateTaskDescription(String newText){
 		this._taskdescription = newText;

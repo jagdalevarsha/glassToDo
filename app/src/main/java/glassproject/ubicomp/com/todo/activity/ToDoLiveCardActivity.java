@@ -65,10 +65,42 @@ public class ToDoLiveCardActivity extends Activity {
 			tv.setPaintFlags(tv.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
 		}
 	}
-	
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		return true;
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.todo_live_card_task_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.details_todo_menu_item:
+                showMoreDetails();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void showMoreDetails()
+    {
+        Intent intent = new Intent(this, MoreInfoActivity.class);
+        intent.putExtra("loc", taskItem.getLoc());
+        intent.putExtra("timeStamp", taskItem.getTimeStamp());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onOptionsMenuClosed(Menu menu) {
+        // Nothing else to do, closing the activity.
+        finish();
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        openOptionsMenu();
+    }
 }

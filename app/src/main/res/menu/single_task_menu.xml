@@ -9,7 +9,12 @@
         android:id="@+id/mark_not_done_menu_item"
         android:icon="@drawable/ic_done_150"
         android:title="@string/mark_not_done"/>
-    
+
+    <item
+        android:id="@+id/details_menu_item"
+        android:icon="@drawable/list_bg"
+        android:title="@string/more_info_task"/>
+
     <item
         android:id="@+id/edit_task_menu_item"
         android:icon="@drawable/ic_microphone_on_50"
@@ -19,6 +24,11 @@
         android:id="@+id/rework_task_menu_item"
         android:icon="@drawable/ic_microphone_on_50"
         android:title="@string/rework_task"/>
+
+    <item
+        android:id="@+id/details_rework_menu_item"
+        android:icon="@drawable/list_bg"
+        android:title="@string/more_info_task"/>
 
     <item
         android:id="@+id/mark_rework_done_menu_item"

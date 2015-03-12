@@ -3,6 +3,8 @@
     package="glassproject.ubicomp.com.todo" >
 
     <uses-permission android:name="com.google.android.glass.permission.DEVELOPMENT" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -35,6 +37,10 @@
         </activity>
         <activity
             android:name=".activity.SingleTaskActivity"
+            android:enabled="true" >
+        </activity>
+        <activity
+            android:name=".activity.MoreInfoActivity"
             android:enabled="true" >
         </activity>
         <activity

@@ -5,6 +5,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -82,10 +83,14 @@ public class SingleTaskActivity extends Activity {
             menu.findItem(R.id.mark_done_menu_item).setVisible(false);
             menu.findItem(R.id.mark_not_done_menu_item).setVisible(false);
             menu.findItem(R.id.edit_task_menu_item).setVisible(false);
+            menu.findItem(R.id.details_menu_item).setVisible(false);
+            menu.findItem(R.id.details_rework_menu_item).setVisible(true);
         }else {
             menu.findItem(R.id.rework_task_menu_item).setVisible(false);
             menu.findItem(R.id.mark_rework_done_menu_item).setVisible(false);
             menu.findItem(R.id.edit_task_menu_item).setVisible(true);
+            menu.findItem(R.id.details_menu_item).setVisible(true);
+            menu.findItem(R.id.details_rework_menu_item).setVisible(false);
             if (taskItem.isDone()) {
                 menu.findItem(R.id.mark_done_menu_item).setVisible(false);
                 menu.findItem(R.id.mark_not_done_menu_item).setVisible(true);
@@ -128,10 +133,24 @@ public class SingleTaskActivity extends Activity {
 		case R.id.delete_task_menu_item:
 			deleteTask();
 			return true;
+        case R.id.details_menu_item:
+            showMoreDetails();
+            return true;
+        case R.id.details_rework_menu_item:
+            showMoreDetails();
+            return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
+
+    private void showMoreDetails()
+    {
+        Intent intent = new Intent(this, MoreInfoActivity.class);
+        intent.putExtra("loc", taskItem.getLoc());
+        intent.putExtra("timeStamp", taskItem.getTimeStamp());
+        startActivity(intent);
+    }
 
 	private void markDone() {
 		taskItem.markDone(true);
