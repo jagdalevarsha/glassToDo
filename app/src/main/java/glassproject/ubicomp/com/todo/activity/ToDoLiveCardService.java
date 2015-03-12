@@ -3,19 +3,11 @@ package glassproject.ubicomp.com.todo.activity;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Handler;
 import android.os.IBinder;
 import android.widget.RemoteViews;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.glass.timeline.LiveCard;
-
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import glassproject.ubicomp.com.todo.R;
 import glassproject.ubicomp.com.todo.db.TaskItemDb;
@@ -65,7 +57,7 @@ public class ToDoLiveCardService extends Service {
                     R.layout.to_do_live_card_screen);
 
             // Set up initial RemoteViews values
-            populateTaskOnView();
+            if(taskItem != null) populateTaskOnView();
 
             // Set up the live card's action with a pending intent
             // to show a menu when tapped
@@ -117,7 +109,8 @@ public class ToDoLiveCardService extends Service {
                 taskItem = db.getLatestTaskItem();
 
                 // Update the remote view with the new scores.
-                populateTaskOnView();
+                if(taskItem != null)
+                    populateTaskOnView();
 
                 // Queue another score update in 30 seconds.
                 mHandler.postDelayed(mUpdateLiveCardRunnable, DELAY_MILLIS);
