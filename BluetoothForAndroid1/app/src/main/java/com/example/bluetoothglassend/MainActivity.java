@@ -213,7 +213,7 @@ public class MainActivity extends Activity {
                     message = "";
                     bytesRead = mmInStream.read(buffer);
                     if (bytesRead != -1) {
-                        while ((bytesRead==bufferSize) && (buffer[bufferSize-1] != 0)) {
+                        while ((bytesRead==bufferSize) && (buffer[bufferSize - 1] != 0)) {
                             message = message + new String(buffer, 0, bytesRead);
                             bytesRead = mmInStream.read(buffer);
                         }

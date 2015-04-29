@@ -241,6 +241,12 @@ public class MainActivity extends Activity {
 	            	buffer = new byte[1024*1024];
 	                bytes = mmInStream.read(buffer);
 	                // Send the obtained bytes to the UI activity
+
+                    //Received the message
+                    String message = "";
+                    message = message + new String(buffer, 0, bytes);
+                    Log.v(tag, "Message Received on Glass");
+
 	                mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer)
 	                .sendToTarget(); 
 	                Log.i(tag, "message received!");
