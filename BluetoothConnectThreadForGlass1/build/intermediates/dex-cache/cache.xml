@@ -6,7 +6,7 @@
         jumboMode="false"
         revision="21.1.2"
         sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67">
-        <dex dex="/Users/ash/p/glass/BluetoothConnectThreadForGlass1/app/build/intermediates/pre-dexed/debug/support-v4-19.1.0-300ead3a69bf3ff29d50b2b7a2246a1f82f0d029.jar" />
+        <dex dex="/Users/ash/p/glass/glassToDo/BluetoothConnectThreadForGlass1/app/build/intermediates/pre-dexed/debug/support-v4-19.1.0-300ead3a69bf3ff29d50b2b7a2246a1f82f0d029.jar" />
     </item>
 
 </items>

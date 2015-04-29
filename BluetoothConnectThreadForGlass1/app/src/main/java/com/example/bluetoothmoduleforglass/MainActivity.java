@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
 
 	private List<Card> mCards;
     private CardScrollView mCardScrollView;
-    
+
     public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 	public BluetoothAdapter mBluetoothAdapter;
 	private Context context = this;
@@ -53,31 +53,37 @@ public class MainActivity extends Activity {
 	
 	GestureDetector mGestureDetector;
 
-	public Handler mHandler = new Handler(){
-		@Override
-		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-			Log.i(tag, "in handler");
-			super.handleMessage(msg);
-			switch(msg.what){			
-			case SUCCESS_CONNECT:				
-				//read and write data from remote device
-				unregisterReceiver(mReceiver);
-				ConnectedThread connectedThread = new ConnectedThread((BluetoothSocket)msg.obj);
-				connectedThread.start();
-				Toast.makeText(getApplicationContext(), "CONNECTED", 2).show();	
-				setContentView(R.layout.activity_main);
-				break;		
-			case MESSAGE_READ:
-				byte[] readBuf = (byte[]) msg.obj;
-				int bufferContent = ByteBuffer.wrap(readBuf).getInt();
-				String string = new String(readBuf);
-				break;
-			}
-		}
-	};
+    public Handler mHandler;
 
-	@Override
+    {
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                // TODO Auto-generated method stub
+                Log.i(tag, "in handler");
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case SUCCESS_CONNECT:
+                        //read and write data from remote device
+                        unregisterReceiver(mReceiver);
+                        ConnectedThread connectedThread = new ConnectedThread((BluetoothSocket) msg.obj);
+                        connectedThread.start();
+                        connectedThread.write("ashwini".getBytes());
+                        Log.v(tag, "Ready to send data");
+                        Toast.makeText(getApplicationContext(), "CONNECTED", 2).show();
+                        setContentView(R.layout.activity_main);
+                        break;
+                    case MESSAGE_READ:
+                        byte[] readBuf = (byte[]) msg.obj;
+                        int bufferContent = ByteBuffer.wrap(readBuf).getInt();
+                        String string = new String(readBuf);
+                        break;
+                }
+            }
+        };
+    }
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
@@ -232,7 +238,7 @@ public class MainActivity extends Activity {
 	        while (true) {
 	            try {
 	                // Read from the InputStream
-	            	buffer = new byte[1024];
+	            	buffer = new byte[1024*1024];
 	                bytes = mmInStream.read(buffer);
 	                // Send the obtained bytes to the UI activity
 	                mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer)

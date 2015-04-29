@@ -195,11 +195,40 @@ public class MainActivity extends Activity {
 			mmOutStream = tmpOut;
 		}
 
-		public void run() {
-			Log.i(TAG, "BEGIN mConnectedThread");
-			byte[] buffer = new byte[4];
-			int bytes;
-		}
+		//public void run() {
+		//	Log.i(TAG, "BEGIN mConnectedThread");
+		//	byte[] buffer = new byte[4];
+		//	int bytes;
+		//}
+
+        @Override
+        public void run() {
+            int bufferSize = 1024*1024;
+            byte[] buffer = new byte[bufferSize];
+            try {
+                //InputStream instream = mmsocket.getInputStream();
+                int bytesRead = - 1;
+                String message = "";
+                while (true) {
+                    message = "";
+                    bytesRead = mmInStream.read(buffer);
+                    if (bytesRead != -1) {
+                        while ((bytesRead==bufferSize) && (buffer[bufferSize-1] != 0)) {
+                            message = message + new String(buffer, 0, bytesRead);
+                            bytesRead = mmInStream.read(buffer);
+                        }
+                        message = message + new String(buffer, 0, bytesRead);
+                        Log.v(TAG, "Message Received : " + message);
+                       // handler.post(new MessagePoster(textView, message));
+                        mmSocket.getInputStream();
+                    }
+                }
+            } catch (IOException e) {
+                Log.d("BLUETOOTH_COMMS", e.getMessage());
+            }
+        }
+
+
 
 		public void connectionLost() {
 			Message msg = handle.obtainMessage(STATE_CONNECTION_LOST);
