@@ -23,6 +23,10 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
+/*
+    Software to be installed on Android Device
+ */
+
 public class MainActivity extends Activity {
 
     private static final UUID MY_UUID = UUID.fromString("0000110E-0000-1000-8000-00805F9B34FB");
@@ -38,7 +42,7 @@ public class MainActivity extends Activity {
     private Set<BluetoothDevice> pairedDevices;
 	Handler handle;
 	BroadcastReceiver receiver;
-	
+
 	ArrayList<BluetoothSocket> mSockets = new ArrayList<BluetoothSocket>();
 	// list of addresses for devices we've connected to
 	ArrayList<String> mDeviceAddresses = new ArrayList<String>();
@@ -218,8 +222,9 @@ public class MainActivity extends Activity {
                             bytesRead = mmInStream.read(buffer);
                         }
                         message = message + new String(buffer, 0, bytesRead);
-                        Log.v(TAG, "Message Received : " + message);
+                        Log.v(TAG, "Message Received on Android Device : " + message);
                        // handler.post(new MessagePoster(textView, message));
+                        //Toast.makeText(getApplicationContext(), "message received : " + message, 2).show();
                         mmSocket.getInputStream();
                     }
                 }
@@ -339,7 +344,7 @@ public class MainActivity extends Activity {
 		// Send the name of the connected device back to the UI Activity
 		// so the HH can show you it's working and stuff...
 		String devs = "";
-
+        mConnectedThread.write("ashwini".getBytes());
 		for (BluetoothSocket sock : mSockets) {
 			devs += sock.getRemoteDevice().getName() + "\n";
 		}

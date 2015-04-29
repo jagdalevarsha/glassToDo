@@ -34,6 +34,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+/*
+  Software that is installed on Glass
+ */
 public class MainActivity extends Activity {
 
 	private List<Card> mCards;
@@ -70,7 +73,7 @@ public class MainActivity extends Activity {
                         connectedThread.start();
                         connectedThread.write("ashwini".getBytes());
                         Log.v(tag, "Ready to send data");
-                        Toast.makeText(getApplicationContext(), "CONNECTED", 2).show();
+                        Toast.makeText(getApplicationContext(), "CONNECTED - Ready to send data", 2).show();
                         setContentView(R.layout.activity_main);
                         break;
                     case MESSAGE_READ:
@@ -245,12 +248,11 @@ public class MainActivity extends Activity {
                     //Received the message
                     String message = "";
                     message = message + new String(buffer, 0, bytes);
-                    Log.v(tag, "Message Received on Glass");
-
+                    Log.v(tag, "Message Received on Glass: " + message);
 	                mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer)
 	                .sendToTarget(); 
 	                Log.i(tag, "message received!");
-	               
+                    //Toast.makeText(getApplicationContext(), "message Received " + message, 2).show();
 	            } catch (IOException e) {
 	            	Log.i(tag, "message failed!");
 	                break;
