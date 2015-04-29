@@ -58,6 +58,8 @@ public class ToDoTaskListActivity extends Activity {
         db = new TaskItemDb(this);
         Intent i= new Intent(this, ToDoLiveCardService.class);
         this.startService(i);
+        Intent dualPurposeIntent = new Intent(this,DualPurposeSpeechService.class);
+        this.startService(dualPurposeIntent);
         setContentView(R.layout.todo_task_screen);
         recordTask();
     }

@@ -13,6 +13,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 //import android.content.Context;
 import android.content.Intent;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,6 +29,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.glass.logging.Log;
+
 //import com.google.android.glass.touchpad.Gesture;
 //import com.google.android.glass.touchpad.GestureDetector;
 
@@ -37,6 +42,13 @@ public class NewTaskActivity extends Activity {
 	private Timer saveTimer;
 //	private ToDoLiveCardService liveService;
 	private final int SPEECH = 10284;
+    public TextView mSpeechView;
+
+    private RecordingThread mRecordingThread;
+    private int mBufferSize;
+    private short[] mAudioBuffer;
+    private String mDecibelFormat;
+    private static final int SAMPLING_RATE = 44100;
 
 //    private GestureDetector mGestureDetector;
 //    private TextViewGestureDetector objGestureDetector;
@@ -54,7 +66,20 @@ public class NewTaskActivity extends Activity {
 	}
 
 	private void recordTask() {
-		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+//        try {
+//            mBufferSize = AudioRecord.getMinBufferSize(SAMPLING_RATE, AudioFormat.CHANNEL_IN_MONO,
+//                    AudioFormat.ENCODING_PCM_16BIT);
+//            mAudioBuffer = new short[mBufferSize / 2];
+//            mSpeechView = (TextView) findViewById(R.id.newTaskLabel);
+//            mRecordingThread = new RecordingThread();
+//            mRecordingThread.start();
+//            Log.v("Speech", "Success");
+//        }
+//        catch(Exception ex)
+//        {
+//            Log.v("Speech", ex.getMessage());
+//        }
 		startActivityForResult(intent, SPEECH);
 	}
 
@@ -216,4 +241,74 @@ public class NewTaskActivity extends Activity {
 //        }
 //        return false;
 //    }
+private class RecordingThread extends Thread {
+
+    private boolean mShouldContinue = true;
+
+    @Override
+    public void run() {
+//        try {
+            android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_AUDIO);
+
+            AudioRecord record = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLING_RATE,
+                    AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, mBufferSize);
+            record.startRecording();
+
+            while (shouldContinue()) {
+                record.read(mAudioBuffer, 0, mBufferSize / 2);
+                updateDecibelLevel();
+            }
+            Log.v("Speech", "Recording");
+            record.stop();
+            record.release();
+//        }
+//        catch (Exception ex)
+//        {
+//            Log.v("Speech Error", "Ignoring");
+//        }
+    }
+
+    /**
+     * Gets a value indicating whether the thread should continue running.
+     *
+     * @return true if the thread should continue running or false if it should stop
+     */
+    private synchronized boolean shouldContinue() {
+        return mShouldContinue;
+    }
+
+    /** Notifies the thread that it should stop running at the next opportunity. */
+    public synchronized void stopRunning() {
+        mShouldContinue = false;
+    }
+
+    /**
+     * Computes the decibel level of the current sound buffer and updates the appropriate text
+     * view.
+     */
+    private void updateDecibelLevel() {
+        // Compute the root-mean-squared of the sound buffer and then apply the formula for
+        // computing the decibel level, 20 * log_10(rms). This is an uncalibrated calculation
+        // that assumes no noise in the samples; with 16-bit recording, it can range from
+        // -90 dB to 0 dB.
+        Log.v("Speech", "Finally");
+        double sum = 0;
+
+        for (short rawSample : mAudioBuffer) {
+            double sample = rawSample / 32768.0;
+            sum += sample * sample;
+        }
+
+        double rms = Math.sqrt(sum / mAudioBuffer.length);
+        final double db = 20 * Math.log10(rms);
+
+        // Update the text view on the main thread.
+//        mSpeechView.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                mSpeechView.setText(String.format(mDecibelFormat, db));
+//            }
+//        });
+    }
+}
 }

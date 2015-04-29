@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,6 +14,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.glass.logging.FormattingLogger;
+import com.google.glass.logging.FormattingLoggers;
+import com.google.glass.voice.VoiceCommand;
+import com.google.glass.voice.VoiceConfig;
+import com.google.glass.voice.VoiceInputHelper;
+import com.google.glass.voice.VoiceListener;
 
 import java.util.List;
 import java.util.Timer;
@@ -27,6 +35,9 @@ public class ToDoLiveCardActivity extends Activity {
 	private static final int SPEECH = 1836;
 	private TaskItem taskItem;
 	private TaskItemDb db;
+
+    private VoiceInputHelper mVoiceInputHelper;
+    private VoiceConfig mVoiceConfig;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +60,19 @@ public class ToDoLiveCardActivity extends Activity {
 			populateTaskOnView();
 			
 		}
+
+        String[] items = {"Hello","All Words", "Blue"};
+        mVoiceConfig = new VoiceConfig();
+        mVoiceConfig.setShouldAllowScreenOff(false);
+        mVoiceConfig.setCustomPhrases(items);
+        mVoiceConfig.setShouldAllowScreenOff(false);
+        mVoiceInputHelper = new VoiceInputHelper(this,new ToDoVoiceListener(mVoiceConfig));
+        mVoiceInputHelper.setWantAudioData(true);
+        mVoiceInputHelper.setVoiceConfig(mVoiceConfig);
+//        mVoiceConfig = new VoiceConfig("MyVoiceConfig", items);
+//        mVoiceInputHelper = new VoiceInputHelper(this, new MyVoiceListener(mVoiceConfig),
+//                VoiceInputHelper.newUserActivityObserver(this));
+//        mVoiceInputHelper.addVoiceServiceListener();
 	}
 	
 	private void populateTaskOnView() {
@@ -102,5 +126,42 @@ public class ToDoLiveCardActivity extends Activity {
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         openOptionsMenu();
+    }
+    public class ToDoVoiceListener implements VoiceListener {
+        protected final VoiceConfig voiceConfig;
+
+        public ToDoVoiceListener(VoiceConfig voiceConfig) {
+            this.voiceConfig = voiceConfig;
+        }
+
+        @Override
+        public VoiceConfig onVoiceCommand(VoiceCommand vc) {
+            String recognizedStr = vc.getLiteral();
+            Log.i("VoiceActivity", "Recognized text: " + recognizedStr);
+
+            return null;
+        }
+
+        @Override
+        public FormattingLogger getLogger() {
+            return FormattingLoggers.getContextLogger();
+        }
+
+        @Override
+        public boolean isRunning() {
+
+            return true;
+        }
+
+        @Override
+        public boolean onResampledAudioData(byte[] arg0, int arg1, int arg2) {
+            return false;
+        }
+
+
+        @Override
+        public void onVoiceConfigChanged(VoiceConfig arg0, boolean arg1) {
+
+        }
     }
 }

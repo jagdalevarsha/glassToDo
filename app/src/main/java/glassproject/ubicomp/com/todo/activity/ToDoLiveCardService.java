@@ -1,13 +1,24 @@
+//Reusing code from link https://stackoverflow.com/questions/21168267/glass-voice-command-nearest-match-from-given-list/21251558#21251558
+//to work around using GlassVoice.apk
 package glassproject.ubicomp.com.todo.activity;
 
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.google.android.glass.timeline.LiveCard;
+import com.google.glass.logging.FormattingLogger;
+import com.google.glass.logging.FormattingLoggers;
+import com.google.glass.voice.VoiceCommand;
+import com.google.glass.voice.VoiceConfig;
+import com.google.glass.voice.VoiceInputHelper;
+import com.google.glass.voice.VoiceListener;
 
 import glassproject.ubicomp.com.todo.R;
 import glassproject.ubicomp.com.todo.db.TaskItemDb;
@@ -27,9 +38,12 @@ public class ToDoLiveCardService extends Service {
             new UpdateLiveCardRunnable();
     private static final long DELAY_MILLIS = 30000;
 
+
     @Override
     public void onCreate() {
         super.onCreate();
+        Intent dualPurposeIntent = new Intent(this,DualPurposeSpeechService.class);
+        this.startService(dualPurposeIntent);
     }
 
     private void populateTaskOnView() {
@@ -49,7 +63,6 @@ public class ToDoLiveCardService extends Service {
 
             // Get an instance of a live card
             mLiveCard = new LiveCard(this, LIVE_CARD_TAG);
-
             db = new TaskItemDb(this);
             taskItem = db.getLatestTaskItem();
             // Inflate a layout into a remote view
@@ -69,6 +82,7 @@ public class ToDoLiveCardService extends Service {
 
             // Publish the live card
             mLiveCard.publish(LiveCard.PublishMode.REVEAL);
+//            mLiveCard.attach(new DualPurposeSpeechService());
 
             // Queue the update text runnable
             mHandler.post(mUpdateLiveCardRunnable);
@@ -130,4 +144,6 @@ public class ToDoLiveCardService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
 }
+
