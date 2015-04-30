@@ -61,18 +61,6 @@ public class ToDoLiveCardActivity extends Activity {
 			
 		}
 
-        String[] items = {"Hello","All Words", "Blue"};
-        mVoiceConfig = new VoiceConfig();
-        mVoiceConfig.setShouldAllowScreenOff(false);
-        mVoiceConfig.setCustomPhrases(items);
-        mVoiceConfig.setShouldAllowScreenOff(false);
-        mVoiceInputHelper = new VoiceInputHelper(this,new ToDoVoiceListener(mVoiceConfig));
-        mVoiceInputHelper.setWantAudioData(true);
-        mVoiceInputHelper.setVoiceConfig(mVoiceConfig);
-//        mVoiceConfig = new VoiceConfig("MyVoiceConfig", items);
-//        mVoiceInputHelper = new VoiceInputHelper(this, new MyVoiceListener(mVoiceConfig),
-//                VoiceInputHelper.newUserActivityObserver(this));
-//        mVoiceInputHelper.addVoiceServiceListener();
 	}
 	
 	private void populateTaskOnView() {
@@ -127,41 +115,5 @@ public class ToDoLiveCardActivity extends Activity {
         super.onAttachedToWindow();
         openOptionsMenu();
     }
-    public class ToDoVoiceListener implements VoiceListener {
-        protected final VoiceConfig voiceConfig;
 
-        public ToDoVoiceListener(VoiceConfig voiceConfig) {
-            this.voiceConfig = voiceConfig;
-        }
-
-        @Override
-        public VoiceConfig onVoiceCommand(VoiceCommand vc) {
-            String recognizedStr = vc.getLiteral();
-            Log.i("VoiceActivity", "Recognized text: " + recognizedStr);
-
-            return null;
-        }
-
-        @Override
-        public FormattingLogger getLogger() {
-            return FormattingLoggers.getContextLogger();
-        }
-
-        @Override
-        public boolean isRunning() {
-
-            return true;
-        }
-
-        @Override
-        public boolean onResampledAudioData(byte[] arg0, int arg1, int arg2) {
-            return false;
-        }
-
-
-        @Override
-        public void onVoiceConfigChanged(VoiceConfig arg0, boolean arg1) {
-
-        }
-    }
 }

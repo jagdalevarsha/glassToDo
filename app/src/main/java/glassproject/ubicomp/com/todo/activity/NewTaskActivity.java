@@ -29,7 +29,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.glass.logging.FormattingLogger;
+import com.google.glass.logging.FormattingLoggers;
 import com.google.glass.logging.Log;
+import com.google.glass.voice.VoiceCommand;
+import com.google.glass.voice.VoiceConfig;
+import com.google.glass.voice.VoiceInputHelper;
+import com.google.glass.voice.VoiceListener;
 
 //import com.google.android.glass.touchpad.Gesture;
 //import com.google.android.glass.touchpad.GestureDetector;
@@ -58,15 +64,21 @@ public class NewTaskActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		db = new TaskItemDb(this);
+
+
+//        mVoiceConfig = new VoiceConfig("MyVoiceConfig", items);
+//        mVoiceInputHelper = new VoiceInputHelper(this, new MyVoiceListener(mVoiceConfig),
+//                VoiceInputHelper.newUserActivityObserver(this));
+//        mVoiceInputHelper.addVoiceServiceListener();
         Intent i= new Intent(this, ToDoLiveCardService.class);
         this.startService(i);
-		setContentView(R.layout.new_task_screen);
+//		setContentView(R.layout.new_task_screen);
 //        objGestureDetector = new TextViewGestureDetector(this,this.obtainStyledAttributes() );
-		recordTask();
+//		recordTask();
 	}
 
 	private void recordTask() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+//        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 //        try {
 //            mBufferSize = AudioRecord.getMinBufferSize(SAMPLING_RATE, AudioFormat.CHANNEL_IN_MONO,
 //                    AudioFormat.ENCODING_PCM_16BIT);
@@ -80,42 +92,42 @@ public class NewTaskActivity extends Activity {
 //        {
 //            Log.v("Speech", ex.getMessage());
 //        }
-		startActivityForResult(intent, SPEECH);
+//		startActivityForResult(intent, SPEECH);
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent data) {
-		if (requestCode == SPEECH && resultCode == RESULT_OK) {
-			List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-			String spokenText = results.get(0);
-			createdTask = new TaskItem(spokenText);
-
-			showTaskOnView(createdTask);
-			
-			saveTimer = new Timer();
-			final int[] c = new int[]{3};
-			saveTimer.schedule(new TimerTask() {
-				@Override
-				public void run() {
-					if(c[0]==0) {
-						saveTimer.cancel();
-						saveTimer = null;
-						saveHandler.sendEmptyMessage(0);
-					} else {
-						updateHandler.sendEmptyMessage(c[0]--);						
-					}
-				}				
-			}, 1000, 1000);
-		} else {
-			((TextView) findViewById(R.id.newTaskLabel)).setVisibility(View.INVISIBLE);
-			((TextView) findViewById(R.id.taskDescription)).setVisibility(View.INVISIBLE);
-			
-			((TextView) findViewById(R.id.messageTextView)).setVisibility(View.VISIBLE);
-			((TextView) findViewById(R.id.messageTextView)).setText("An error occurred! Try again later.");
-		}
-
-		super.onActivityResult(requestCode, resultCode, data);
+//		if (requestCode == SPEECH && resultCode == RESULT_OK) {
+//			List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+//			String spokenText = results.get(0);
+//			createdTask = new TaskItem(spokenText);
+//
+//			showTaskOnView(createdTask);
+//
+//			saveTimer = new Timer();
+//			final int[] c = new int[]{3};
+//			saveTimer.schedule(new TimerTask() {
+//				@Override
+//				public void run() {
+//					if(c[0]==0) {
+//						saveTimer.cancel();
+//						saveTimer = null;
+//						saveHandler.sendEmptyMessage(0);
+//					} else {
+//						updateHandler.sendEmptyMessage(c[0]--);
+//					}
+//				}
+//			}, 1000, 1000);
+//		} else {
+//			((TextView) findViewById(R.id.newTaskLabel)).setVisibility(View.INVISIBLE);
+//			((TextView) findViewById(R.id.taskDescription)).setVisibility(View.INVISIBLE);
+//
+//			((TextView) findViewById(R.id.messageTextView)).setVisibility(View.VISIBLE);
+//			((TextView) findViewById(R.id.messageTextView)).setText("An error occurred! Try again later.");
+//		}
+//
+//		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
 	private Handler updateHandler = new Handler(){
@@ -134,12 +146,12 @@ public class NewTaskActivity extends Activity {
 
 
 	private void showTaskOnView(TaskItem task) {
-		((TextView) findViewById(R.id.newTaskLabel)).setVisibility(View.VISIBLE);
-		((TextView) findViewById(R.id.taskDescription)).setVisibility(View.VISIBLE);
-		((TextView) findViewById(R.id.taskDescription)).setText(task.getTaskDescription());
-		
-		((TextView) findViewById(R.id.messageTextView)).setVisibility(View.VISIBLE);
-		((TextView) findViewById(R.id.messageTextView)).setText("tap for options");
+//		((TextView) findViewById(R.id.newTaskLabel)).setVisibility(View.VISIBLE);
+//		((TextView) findViewById(R.id.taskDescription)).setVisibility(View.VISIBLE);
+//		((TextView) findViewById(R.id.taskDescription)).setText(task.getTaskDescription());
+//
+//		((TextView) findViewById(R.id.messageTextView)).setVisibility(View.VISIBLE);
+//		((TextView) findViewById(R.id.messageTextView)).setText("tap for options");
 	}
 
 	@Override
