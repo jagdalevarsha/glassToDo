@@ -497,6 +497,8 @@ public class SingleTaskActivity extends Activity {
             public void run() {
                 Log.v(TAG, "Message Received on Glass : " + message);
                 tv.setText(message);
+                taskItem.updateTaskDescription(message);
+                db.updateTaskItem(taskItem);
             }
         });
     }
