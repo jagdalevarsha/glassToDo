@@ -7,12 +7,16 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
+import static android.view.View.OnClickListener;
+
 /*
     Software to be installed on Android Device
  */
@@ -30,18 +36,21 @@ import java.util.UUID;
 public class MainActivity extends Activity {
 
     private static final UUID MY_UUID = UUID.fromString("0000110E-0000-1000-8000-00805F9B34FB");
-
 	public static String msgToSend;
 	public static final int STATE_CONNECTION_STARTED = 0;
 	public static final int STATE_CONNECTION_LOST = 1;
 	public static final int READY_TO_CONN = 2;
-	ConnectedThread mConnectedThread;
+    public BluetoothSocket socket_conn;
+	public volatile ConnectedThread mConnectedThread;
+
 	BluetoothAdapter myBt;
 	public String TAG = "log";
 	public String NAME =" BLE";
     private Set<BluetoothDevice> pairedDevices;
 	Handler handle;
-	BroadcastReceiver receiver;
+    EditText inputField;
+    Button submitButton;
+    BroadcastReceiver receiver;
 
 	ArrayList<BluetoothSocket> mSockets = new ArrayList<BluetoothSocket>();
 	// list of addresses for devices we've connected to
@@ -56,16 +65,20 @@ public class MainActivity extends Activity {
 	int REQUEST_ENABLE_BT = 1;
 	AcceptThread accThread;
 	TextView connectedDevice;
-	
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
+        inputField = (EditText) findViewById(R.id.editText);
 		uuids[0] = UUID.fromString(uuid1);
 		uuids[1] = UUID.fromString(uuid2);
 		
 		connectedDevice = (TextView)findViewById(R.id.connectedDevice);
+        submitButton = (Button)findViewById(R.id.task_submit);
 		
 		handle = new Handler(Looper.getMainLooper()) {
 
@@ -149,11 +162,21 @@ public class MainActivity extends Activity {
             }
         }
         */
-		
+       // receiveMsg("select");
 	}
-	
-	
-	public void startListening() {
+
+    public void receiveMsg(final String input){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.v(TAG, "Message Received on Android Device : " + input);
+                inputField.setText(input);
+            }
+        });
+
+    }
+
+    public void startListening() {
 		if (accThread != null) {
 			accThread.cancel();
 		} else if (mConnectedThread != null) {
@@ -222,7 +245,8 @@ public class MainActivity extends Activity {
                             bytesRead = mmInStream.read(buffer);
                         }
                         message = message + new String(buffer, 0, bytesRead);
-                        Log.v(TAG, "Message Received on Android Device : " + message);
+                        Log.v(TAG,"receiveMsg called");
+                        receiveMsg(message);
                        // handler.post(new MessagePoster(textView, message));
                         //Toast.makeText(getApplicationContext(), "message received : " + message, 2).show();
                         mmSocket.getInputStream();
@@ -232,8 +256,6 @@ public class MainActivity extends Activity {
                 Log.d("BLUETOOTH_COMMS", e.getMessage());
             }
         }
-
-
 
 		public void connectionLost() {
 			Message msg = handle.obtainMessage(STATE_CONNECTION_LOST);
@@ -266,6 +288,7 @@ public class MainActivity extends Activity {
 				Log.e(TAG, "close() of connect socket failed", e);
 			}
 		}
+
 	}
 
 	public static synchronized void setMsg(String newMsg) {
@@ -297,19 +320,19 @@ public class MainActivity extends Activity {
 
 		public void run() {
 			Log.e(TAG, "Running");
-			BluetoothSocket socket = null;
+			socket_conn = null;
 			// Keep listening until exception occurs or a socket is returned
 			while (true) {
 
 				try {
-					socket = mmServerSocket.accept();
+					socket_conn = mmServerSocket.accept();
 				} catch (IOException e) {
 					e.printStackTrace();
 					break;
 				}
 				// If a connection was accepted
 
-				if (socket != null) {
+				if (socket_conn != null) {
 					// if the connection has been built, then close the server
 					// socket..
 					try {
@@ -319,7 +342,9 @@ public class MainActivity extends Activity {
 						e.printStackTrace();
 					}
 					// Do work to manage the connection (in a separate thread)
-					manageConnectedSocket(socket);
+					manageConnectedSocket(socket_conn);
+                    mConnectedThread = new ConnectedThread(socket_conn);
+                    mConnectedThread.start();
 					break;
 				}
 			}
@@ -335,16 +360,32 @@ public class MainActivity extends Activity {
 			} catch (IOException e) {
 			}
 		}
+
 	}
+
+    public void btnClick(View view){
+       // mConnectedThread = new ConnectedThread(socket_conn);
+       // mConnectedThread.start();
+        if(mConnectedThread != null){
+            mConnectedThread.write(inputField.getText().toString().getBytes());
+            Log.v(TAG,"Button Click with value : " + inputField.getText().toString() );
+        }
+
+
+    }
 
 	private void manageConnectedSocket(BluetoothSocket socket) {
 		// start our connection thread
-		mConnectedThread = new ConnectedThread(socket);
-		mConnectedThread.start();
+		//mConnectedThread = new ConnectedThread(socket);
+		//mConnectedThread.start();
+        if(mConnectedThread != null){
+            mConnectedThread.write("Start".getBytes());
+            //mConnectedThread.start();
+        }
+
 		// Send the name of the connected device back to the UI Activity
 		// so the HH can show you it's working and stuff...
 		String devs = "";
-        mConnectedThread.write("ashwini".getBytes());
 		for (BluetoothSocket sock : mSockets) {
 			devs += sock.getRemoteDevice().getName() + "\n";
 		}

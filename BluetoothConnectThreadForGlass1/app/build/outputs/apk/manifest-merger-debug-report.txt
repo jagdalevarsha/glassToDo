@@ -45,7 +45,7 @@ ADDED from AndroidManifest.xml:18:5
 		ADDED from AndroidManifest.xml:20:9
 	android:theme
 		ADDED from AndroidManifest.xml:22:9
-activity#com.example.bluetoothmoduleforglass.MainActivity
+activity#com.example.btglass.MainActivity
 ADDED from AndroidManifest.xml:23:9
 	android:label
 		ADDED from AndroidManifest.xml:25:13

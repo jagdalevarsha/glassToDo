@@ -53,6 +53,7 @@ public class SingleTaskActivity extends Activity {
     protected static final int MESSAGE_READ = 1;
     String TAG = "SingleTask - Debug";
     BroadcastReceiver mReceiver;
+    public TextView tv;
 
     ArrayList<BluetoothDevice> devices;
     IntentFilter filter;
@@ -64,7 +65,7 @@ public class SingleTaskActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.single_task_screen);
-
+        tv = (TextView) findViewById(R.id.taskDescription);
 		int id = getIntent().getIntExtra("taskItemId", -1);
 		
 		if(id == -1) {
@@ -84,7 +85,7 @@ public class SingleTaskActivity extends Activity {
 
 
 	private void populateTaskOnView() {
-		TextView tv = (TextView) findViewById(R.id.taskDescription);
+		//TextView tv = (TextView) findViewById(R.id.taskDescription);
 		tv.setText(taskItem.getTaskDescription());
 
         /* Start Bluetooth Connection */
@@ -126,11 +127,13 @@ public class SingleTaskActivity extends Activity {
 
                     // Add Names of the three devices {Android}
                     Log.v(TAG, device.getName());
-                    if(device.getName() == ""){
+                    // Add specific names of devices
+                   // if(device.getName() == ""){
                         bluetoothFlag = true;
                         selectedDevice = device;
-                    }
-                    devices.add(device);
+                        break;
+                   // }
+                    //devices.add(device);
                 }
                // setupScrollView();
             }
@@ -305,29 +308,36 @@ public class SingleTaskActivity extends Activity {
 			} }, 1000);
 	}
 
-    public Handler mHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            // TODO Auto-generated method stub
-            Log.i(TAG, "in handler");
-            super.handleMessage(msg);
-            switch(msg.what){
-                case SUCCESS_CONNECT:
-                    //read and write data from remote device
-                    unregisterReceiver(mReceiver);
-                    ConnectedThread connectedThread = new ConnectedThread((BluetoothSocket)msg.obj);
-                    connectedThread.start();
-                    Toast.makeText(getApplicationContext(), "CONNECTED", 2).show();
-                    //setContentView(R.layout.activity_main);
-                    break;
-                case MESSAGE_READ:
-                    byte[] readBuf = (byte[]) msg.obj;
-                    int bufferContent = ByteBuffer.wrap(readBuf).getInt();
-                    String string = new String(readBuf);
-                    break;
+    public Handler mHandler;
+
+    {
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                // TODO Auto-generated method stub
+                Log.i(TAG, "in handler");
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case SUCCESS_CONNECT:
+                        //read and write data from remote device
+                        unregisterReceiver(mReceiver);
+                        ConnectedThread connectedThread = new ConnectedThread((BluetoothSocket) msg.obj);
+                        connectedThread.start();
+                        //Add data field here :
+                        connectedThread.write(tv.getText().toString().getBytes());
+
+                        Toast.makeText(getApplicationContext(), "CONNECTED", 2).show();
+                        //setContentView(R.layout.activity_main);
+                        break;
+                    case MESSAGE_READ:
+                        byte[] readBuf = (byte[]) msg.obj;
+                        int bufferContent = ByteBuffer.wrap(readBuf).getInt();
+                        String string = new String(readBuf);
+                        break;
+                }
             }
-        }
-    };
+        };
+    }
 
     /*
      * private initBluetooth
@@ -399,6 +409,11 @@ public class SingleTaskActivity extends Activity {
                     // Send the obtained bytes to the UI activity
                     mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();
+                    //Received the message
+                    String message = "";
+                    message = message + new String(buffer, 0, bytes);
+                    updateTaskDescription(message);
+                    Log.v(TAG, "Message Received on Glass: " + message);
                     Log.i(TAG, "message received!");
 
                 } catch (IOException e) {
@@ -474,5 +489,15 @@ public class SingleTaskActivity extends Activity {
                 mmSocket.close();
             } catch (IOException e) { }
         }
+    }
+
+    public void updateTaskDescription(final String message){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.v(TAG, "Message Received on Glass : " + message);
+                tv.setText(message);
+            }
+        });
     }
 }
